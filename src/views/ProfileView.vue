@@ -60,26 +60,21 @@
     })
     
     function nameValidation(name: any){
-        console.log(name)
-        console.log(name.length)
         if(name.length > 18 || name.length < 5){
             errorMessages.value.name.errors = true
-            console.log('Error')
         }else{
             errorMessages.value.name.errors = false
         }
     }
     function lastnameValidation(){
-        if(data.value.values.lastname == data.value.values.name){
+        if(data.value.values.name == data.value.values.lastname){
             errorMessages.value.lastname.errors = true
         }else{
             errorMessages.value.lastname.errors = false
         }
     }
     function ageValidation(age: any){
-        console.log(age)
         if(age < 0 || age > 60){
-            console.log('Error error')
             return errorMessages.value.age.errors = true
         }else{
             errorMessages.value.age.errors = false
