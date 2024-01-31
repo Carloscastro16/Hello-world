@@ -12,32 +12,47 @@
             }
         }
     })
+    let validForm = ref({
+        isSucces: false, 
+        message: 'Formulario enviado'
+    })
     function checkForm(){
-        if(!data.value.values.name){
-            data.value.errors.push("Nombre requerido.")
+        data.value.errors = [];
+        let formValues = data.value.values;
+        let formErrors = data.value.errors;
+        if(!formValues.name){
+            formErrors.push("Nombre requerido.")
         }else{
-            if(data.value.values.name.length > 18){
-                data.value.errors.push("Nombre requiere ser menor a 18 caracteres.");
+            if(formValues.name.length > 18){
+                formErrors.push("Nombre requiere ser menor a 18 caracteres.");
             }
-            if(data.value.values.name.length < 5){
-                data.value.errors.push("Nombre requiere ser mayor a 5 caracteres.");
+            if(formValues.name.length < 5){
+                formErrors.push("Nombre requiere ser mayor a 5 caracteres.");
             }
         }
-        if(!data.value.values.lastname){
-            data.value.errors.push("Apellido requerido.")
+        if(!formValues.lastname){
+            formErrors.push("Apellido requerido.")
         }
-        if(data.value.values.name == data.value.values.lastname){
-            data.value.errors.push("Apellido no puede ser igual al nombre.");
+        if(formValues.name == formValues.lastname){
+            formErrors.push("Apellido no puede ser igual al nombre.");
         }
-        if(!data.value.values.age){
-            data.value.errors.push("Edad requerida.")
+        if(!formValues.age){
+            formErrors.push("Edad requerida.")
         }
-        if(!data.value.values.gender){
-            data.value.errors.push("Genero requerido.")
+        if(!formValues.genderSelect.basicGender){
+            formErrors.push("Genero requerido.")
         }
-        if(data.value.values.age < 0 && data.value.values.age > 60){
-            data.value.errors.push("Edades aceptadas solo entre 0 y 60")
-        } 
+        if(formValues.age < 0 && formValues.age > 60){
+            formErrors.push("Edades aceptadas solo entre 0 y 60")
+        }
+        if(!errorMessages.value.name.errors && !errorMessages.value.lastname.errors && !errorMessages.value.age.errors && !errorMessages.value.gender.errors){
+            validForm.value.isSucces = true;
+        }else{
+            validForm.value.isSucces = false;
+        }
+        data.value.values = formValues
+        data.value.errors = formErrors
+
         console.log(data.value)
     }
     var errorMessages: any = ref({
@@ -124,10 +139,11 @@
                 <p>Errores:</p>
                 <span v-for="(err, index) in data.errors" :key="index">{{ err }}</span>
             </div>
+            <div v-if="validForm.isSucces" class="success">
+                <p>{{ validForm.message }}</p>
+            </div>
         </div>
     </div>
-
-
 </template>
   
 <style>
@@ -196,6 +212,8 @@
     border-radius: .5rem;
     border: none;
     padding: .4rem 1rem;
+    background: #41b053;
+    color: #fff;
 }
 .input-container input:focus-visible{
     border: none;
@@ -208,6 +226,11 @@
 .errors{
     display: flex;
     flex-direction: column;
+}
+.success{
+    display: flex;
+    flex-direction: column;
+    color: #000;
 }
 .errors p{
     color: #000;
