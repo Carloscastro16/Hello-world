@@ -62,21 +62,27 @@
     function nameValidation(name: any){
         console.log(name)
         console.log(name.length)
-        if(name.length > 18){
-            errorMessages.value.name.errors.value = true
+        if(name.length > 18 || name.length < 5){
+            errorMessages.value.name.errors = true
             console.log('Error')
+        }else{
+            errorMessages.value.name.errors = false
         }
     }
     function lastnameValidation(){
-        if(data.value.values.lastname != data.value.values.name){
-            errorMessages.value.lastname.errors.value = true
+        if(data.value.values.lastname == data.value.values.name){
+            errorMessages.value.lastname.errors = true
+        }else{
+            errorMessages.value.lastname.errors = false
         }
     }
     function ageValidation(age: any){
         console.log(age)
         if(age < 0 || age > 60){
             console.log('Error error')
-            return errorMessages.value.age.errors.value = true
+            return errorMessages.value.age.errors = true
+        }else{
+            errorMessages.value.age.errors = false
         }
     }
 
@@ -92,18 +98,18 @@
             <p class="input-container">
                 <label for="name">Name</label>
                 <input @input="nameValidation(data.values.name)" type="text" name="name" id="name" v-model="data.values.name" min="5" max="18">
-                <span v-if="errorMessages.name.errors">El nombre debe tener más de 5 caracteres y menos de 18</span>
+                <span class="input-errors" v-if="errorMessages.name.errors">El nombre debe tener más de 5 caracteres y menos de 18</span>
             </p>
         
             <p class="input-container">
                 <label for="age">Apellidos</label>
                 <input @input="lastnameValidation()" type="text" name="apellido" id="apellido" v-model="data.values.lastname" min="0">
-                <span v-if="errorMessages.lastname.errors">El apellido no puede ser el mismo que el nombre</span>
+                <span class="input-errors" v-if="errorMessages.lastname.errors">El apellido no puede ser el mismo que el nombre</span>
             </p>
             <p class="input-container">
                 <label for="age">Age</label>
                 <input @input="ageValidation(data.values.age)" type="number" name="age" id="age" v-model="data.values.age" min="0">
-                <span v-if="errorMessages.age.errors">La edad debe estar en el rango entre 0 y 60</span>
+                <span class="input-errors" v-if="errorMessages.age.errors">La edad debe estar en el rango entre 0 y 60</span>
             </p>
         
             <p class="input-container">
@@ -113,13 +119,13 @@
                 <option value="masculino">Masculino</option>
                 <option value="otro">Otro</option>
                 </select>
+                <input class="gender-input" v-if="data.values.genderSelect.basicGender == 'otro'" type="text" v-model="data.values.genderSelect.other">
             </p>
-            <input v-if="data.values.genderSelect.basicGender == 'otro'" type="text" v-model="data.values.genderSelect.other">
         
             <p class="submit-container">
                 <input @click="checkForm()" type="submit" value="Submit">  
             </p>
-            <div class="errors">
+            <div v-if="data.errors.length > 0" class="errors">
                 <p>Errores:</p>
                 <span v-for="(err, index) in data.errors" :key="index">{{ err }}</span>
             </div>
@@ -148,6 +154,31 @@
     border-radius: 1rem;
     padding: 1rem;
 }
+.input-container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+.input-container label{
+    text-align: left;
+    width: 100%;
+}
+.input-container select{
+    width: 100%;
+    border-radius: 1rem;
+    font-size: .8rem;
+    padding: .4rem .5rem;
+    border: none;
+}
+.input-errors{
+    color: #fa4545;
+    font-size: .7rem;
+}
+.input-container select:focus-visible{
+    outline: none;
+    border: none;
+}
 .input-container input{
     width: 300px;
     font-size: .8rem;
@@ -163,20 +194,32 @@
     color: #000;
 
 }
+.submit-container{
+    margin-top: 1rem;
+}
+.submit-container input{
+    border-radius: .5rem;
+    border: none;
+    padding: .4rem 1rem;
+}
 .input-container input:focus-visible{
     border: none;
     outline: none;
+}
+.gender-input{
+    width: 100%;
+    margin-top: 1rem;
 }
 .errors{
     display: flex;
     flex-direction: column;
 }
-p{
+.errors p{
     color: #000;
 }
-span{
-    color: #000;
-    opacity: .3;
+.errors span{
+    color: #fa4545;
+    opacity: .6;
 }
 @media (min-width: 1024px) {
     .profile {
