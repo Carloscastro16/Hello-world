@@ -1,79 +1,82 @@
 <script lang="ts" setup>
     import { ref } from 'vue'
-    import type { IFormItems } from '@/interfaces/IFormItems';
-    let data: IFormItems = {
-        errors: ['Error 1'],
+    let data: any = ref({
+        errors: [],
         values:{
             name: '',
             lastname: '',
             age: 0,
-            gender: ''
+            genderSelect: {
+                basicGender: '',
+                others: ''
+            }
         }
-    }
+    })
     function checkForm(){
-        if(!data.values.name){
-            data.errors.push("Nombre requerido.")
+        if(!data.value.values.name){
+            data.value.errors.push("Nombre requerido.")
         }else{
-            if(data.values.name.length > 18){
-                data.errors.push("Nombre requiere ser menor a 18 caracteres.");
+            if(data.value.values.name.length > 18){
+                data.value.errors.push("Nombre requiere ser menor a 18 caracteres.");
             }
-            if(data.values.name.length < 5){
-                data.errors.push("Nombre requiere ser mayor a 5 caracteres.");
+            if(data.value.values.name.length < 5){
+                data.value.errors.push("Nombre requiere ser mayor a 5 caracteres.");
             }
         }
-        if(!data.values.lastname){
-            data.errors.push("Apellido requerido.")
+        if(!data.value.values.lastname){
+            data.value.errors.push("Apellido requerido.")
         }
-        if(data.values.name == data.values.lastname){
-            data.errors.push("Apellido no puede ser igual al nombre.");
+        if(data.value.values.name == data.value.values.lastname){
+            data.value.errors.push("Apellido no puede ser igual al nombre.");
         }
-        if(!data.values.age){
-            data.errors.push("Edad requerida.")
+        if(!data.value.values.age){
+            data.value.errors.push("Edad requerida.")
         }
-        if(!data.values.gender){
-            data.errors.push("Genero requerido.")
+        if(!data.value.values.gender){
+            data.value.errors.push("Genero requerido.")
         }
-        if(data.values.age < 0 && data.values.age > 60){
-            data.errors.push("Edades aceptadas solo entre 0 y 60")
+        if(data.value.values.age < 0 && data.value.values.age > 60){
+            data.value.errors.push("Edades aceptadas solo entre 0 y 60")
         } 
         console.log(data)
     }
-    var errorMessages: any = {
+    var errorMessages: any = ref({
         name: {
-            errors: ref(false),
+            errors: false,
             message: ''
         },
         lastname: {
-            errors: ref(false),
+            errors: false,
             message: ''
         },
         age: {
-            errors: ref(false),
+            errors: false,
             message: ''
         },
         gender: {
-            errors: ref(false),
+            errors: false,
             message: ''
         }
-    }
+    })
     
     function nameValidation(name: any){
         console.log(name)
         console.log(name.length)
         if(name.length > 18){
-            errorMessages.name.errors.value = true
+            errorMessages.value.name.errors.value = true
+            console.log('Error')
         }
     }
     function lastnameValidation(){
-        if(data.values.lastname != data.values.name){
-            errorMessages.lastname.errors.value = true
+        if(data.value.values.lastname != data.value.values.name){
+            errorMessages.value.lastname.errors.value = true
         }
     }
     function ageValidation(age: any){
         console.log(age)
         if(age < 0 || age > 60){
             console.log('Error error')
-            return errorMessages.age.errors.value = true
+            return errorMessages.value.age.errors.value = true
         }
     }
 
@@ -89,11 +92,13 @@
             <p class="input-container">
                 <label for="name">Name</label>
                 <input @input="nameValidation(data.values.name)" type="text" name="name" id="name" v-model="data.values.name" min="5" max="18">
+                <span v-if="errorMessages.name.errors">El nombre debe tener más de 5 caracteres y menos de 18</span>
             </p>
         
             <p class="input-container">
                 <label for="age">Apellidos</label>
                 <input @input="lastnameValidation()" type="text" name="apellido" id="apellido" v-model="data.values.lastname" min="0">
+                <span v-if="errorMessages.lastname.errors">El apellido no puede ser el mismo que el nombre</span>
             </p>
             <p class="input-container">
                 <label for="age">Age</label>
@@ -103,13 +108,13 @@
         
             <p class="input-container">
                 <label for="movie">Genero</label>
-                <select name="gender" id="gender" v-model="data.values.gender">
+                <select name="gender" id="gender" v-model="data.values.genderSelect.basicGender">
                 <option value="femenino">Femenino</option>
                 <option value="masculino">Masculino</option>
                 <option value="otro">Otro</option>
                 </select>
             </p>
-            <input v-if="data.values.gender == 'otro'" type="text" v-model="data.values.gender">
+            <input v-if="data.values.genderSelect.basicGender == 'otro'" type="text" v-model="data.values.genderSelect.other">
         
             <p class="submit-container">
                 <input @click="checkForm()" type="submit" value="Submit">  
@@ -144,6 +149,7 @@
     padding: 1rem;
 }
 .input-container input{
+    width: 300px;
     font-size: .8rem;
     padding: .4rem .5rem;
     border-radius: 1rem;
@@ -160,6 +166,17 @@
 .input-container input:focus-visible{
     border: none;
     outline: none;
+}
+.errors{
+    display: flex;
+    flex-direction: column;
+}
+p{
+    color: #000;
+}
+span{
+    color: #000;
+    opacity: .3;
 }
 @media (min-width: 1024px) {
     .profile {
