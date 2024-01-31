@@ -8,7 +8,7 @@
             age: 0,
             genderSelect: {
                 basicGender: '',
-                others: ''
+                other: ''
             }
         }
     })
@@ -38,7 +38,7 @@
         if(data.value.values.age < 0 && data.value.values.age > 60){
             data.value.errors.push("Edades aceptadas solo entre 0 y 60")
         } 
-        console.log(data)
+        console.log(data.value)
     }
     var errorMessages: any = ref({
         name: {
